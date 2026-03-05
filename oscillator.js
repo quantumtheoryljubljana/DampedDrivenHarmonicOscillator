@@ -23,6 +23,7 @@ const driveOffBtn = document.getElementById("driveOff");
 const driveResBtn = document.getElementById("driveRes");
 const driveCustomBtn = document.getElementById("driveCustom");
 
+const startStopBtn = document.getElementById("startStopBtn");
 const resetBtn = document.getElementById("resetBtn");
 
 const dampingGroup = [dampNoneBtn, dampUnderBtn, dampCritBtn, dampOverBtn, dampCustomBtn];
@@ -34,6 +35,9 @@ const dt = 0.02;
 
 let xtData = [];
 let phaseData = [];
+
+let running = true;
+let rafId = null;
 
 // (1,1) adaptive expand-only range
 let simXRange = 1.5;
@@ -72,10 +76,6 @@ function updateBRange(preserve=true){
     set("b", Math.min(bNow, bNewMax));
   }
 
-  const gEl = document.getElementById("gammaSlider");
-  const gMax = bNewMax / (2*get("m"));
-  gEl.min = 0;
-  gEl.max = Math.max(0.01, gMax);
 }
 
 // Reset
@@ -85,24 +85,57 @@ function resetSimulation(){
   t = 0;
   xtData = [];
   phaseData = [];
+
+  // refresh once (useful if paused)
+  drawSimulation();
+  drawXT();
+  drawPhase();
+  drawResAndPhase();
+  updateDisplay();
 }
 resetBtn.addEventListener("click", resetSimulation);
 
+function startSimulation(){
+  if(running) return;
+  running = true;
+  startStopBtn.innerText = "Ustavi";
+  rafId = requestAnimationFrame(loop);
+}
+
+function stopSimulation(){
+  if(!running) return;
+  running = false;
+  startStopBtn.innerText = "Začni";
+  if(rafId !== null){
+    cancelAnimationFrame(rafId);
+    rafId = null;
+  }
+}
+
+startStopBtn.addEventListener("click", ()=>{
+  if(running) stopSimulation();
+  else startSimulation();
+});
+
 // --- Display ---
 function updateDisplay(){
-  document.getElementById("mVal").innerText = get("m").toFixed(2);
-  document.getElementById("kVal").innerText = get("k").toFixed(2);
-  document.getElementById("bVal").innerText = get("b").toFixed(2);
-  document.getElementById("FVal").innerText = get("F").toFixed(2);
-  document.getElementById("wVal").innerText = get("w").toFixed(2);
+  //document.getElementById("mVal").innerText = get("m").toFixed(2);
+  document.getElementById("mVal").innerText = get("m").toFixed(2) + " kg";
+  document.getElementById("kVal").innerText = get("k").toFixed(2) + " N/m";
+  //document.getElementById("bVal").innerText = get("b").toFixed(2);
+  const b = get("b");
+  const gcalc = gamma();
+  document.getElementById("bVal").innerText = b.toFixed(2) + " kg/s"  + " (γ="+ gcalc +" rad/s)";
+     
+  document.getElementById("FVal").innerText = get("F").toFixed(2)+ " N";
+  document.getElementById("wVal").innerText = get("w").toFixed(2) + " rad/s";
 
   const w0 = omega0();
-  document.getElementById("omega0Val").innerText = w0.toFixed(2);
+  document.getElementById("omega0Val").innerText = w0.toFixed(2) + " rad/s";
   document.getElementById("omega0Slider").value = w0;
 
-  const g = gamma();
-  document.getElementById("gammaVal").innerText = g.toFixed(2);
-  document.getElementById("gammaSlider").value = g;
+
+
 }
 
 // --- Preset behaviors ---
@@ -151,7 +184,7 @@ driveResBtn.addEventListener("click", applyDriveRes);
 driveCustomBtn.addEventListener("click", ()=>setActive(drivingGroup, driveCustomBtn));
 
 // sliders -> custom
-["m","k","b","omega0Slider","gammaSlider"].forEach(id=>{
+["m","k","b","omega0Slider"].forEach(id=>{
   document.getElementById(id).addEventListener("input", ()=>{
     setActive(dampingGroup, dampCustomBtn);
   });
@@ -172,12 +205,6 @@ document.getElementById("omega0Slider").addEventListener("input",()=>{
   const m = get("m");
   set("k", m*w0*w0);
   updateBRange(true);
-});
-
-document.getElementById("gammaSlider").addEventListener("input",()=>{
-  const g = get("gammaSlider");
-  const m = get("m");
-  set("b", 2*m*g);
 });
 
 // --- Physics step ---
@@ -299,7 +326,7 @@ function drawSimulation(){
     -xRange, xRange,
     0, Vmax * 1.1,
     "x / m",
-    "V / J",
+    "U / J",
     5, 4
   );
 
@@ -403,7 +430,7 @@ function drawResAndPhase(){
   for(let i=0;i<=n;i++){
     const w = (i/n)*wMax;
     const denom = Math.sqrt((w0*w0 - w*w)**2 + (2*g*w)**2);
-    const A = (denom===0) ? 0 : (F/m)/denom;
+    const A = (denom===0) ? 1e3 : (F/m)/denom;
 
     const rawPhi = Math.atan2(2*g*w, (w0*w0 - w*w));
     const phi = rawPhi < 0 ? rawPhi + Math.PI : rawPhi;
@@ -509,6 +536,7 @@ function updatePlots(){
 
 // --- Main loop ---
 function loop(){
+  if(!running) return;
   physics();
   updatePlots();
 
@@ -518,7 +546,7 @@ function loop(){
   drawResAndPhase();
 
   updateDisplay();
-  requestAnimationFrame(loop);
+  rafId = requestAnimationFrame(loop);
 }
 
 // init ranges
@@ -528,5 +556,6 @@ updateBRange(false);
 applyDampingNone();
 applyDriveNone();
 updateDisplay();
+startStopBtn.innerText = "Ustavi";
 loop();
 

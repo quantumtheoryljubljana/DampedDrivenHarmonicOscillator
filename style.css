@@ -6,7 +6,7 @@ body{
 #container{
   display: grid;
   grid-template-columns: repeat(3, 420px);
-  grid-template-rows: 240px 240px;
+  grid-template-rows: 250px 250px;
   gap: 20px;
   align-items: start;
 }
@@ -16,17 +16,22 @@ canvas{
   background: #fff;
 }
 
+.slider-row input[type="range"]{
+  width: 100px;
+}
+
 #sliders{
   border: 1px solid #444;
   padding: 10px;
-  height: 240px;
+  height: 250px;
   box-sizing: border-box;
   overflow: auto;
   background: #fafafa;
 }
 
 .slider-row{
-  display: flex;
+  display: grid;
+  grid-template-columns: 30px 60px 1fr 180px;
   align-items: center;
   gap: 10px;
   margin-bottom: 12px;
@@ -36,10 +41,16 @@ canvas{
   width: 28px;
 }
 
-.slider-row span{
-  width: 56px;
-  text-align: right;
+.min-span{
+  width: 64px;
+  text-align: left;
   font-variant-numeric: tabular-nums;
+}
+
+.slider-row span{
+  text-align: left;
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
 }
 
 hr{
@@ -62,7 +73,7 @@ hr{
 }
 
 .preset-label{
-  width: 70px;
+  width: 80px;
   font-weight: 600;
 }
 

@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Damped Driven Oscillator</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+<h2>Damped Driven Harmonic Oscillator</h2>
+
+<div id="container">
+  <!-- Row 1 -->
+  <canvas id="simCanvas" width="420" height="240"></canvas>
+  <canvas id="xtCanvas" width="420" height="240"></canvas>
+  <canvas id="phaseCanvas" width="420" height="240"></canvas>
+
+  <!-- Row 2 -->
+  <canvas id="resCanvas" width="420" height="240"></canvas>
+  <canvas id="phasePlotCanvas" width="420" height="240"></canvas>
+
+  <!-- (2,3): sliders -->
+  <div id="sliders">
+    <div class="slider-row">
+      <label for="m">m</label>
+      <input type="range" id="m" min="0.5" max="5" step="0.1" value="1">
+      <span id="mVal"></span>
+    </div>
+
+    <div class="slider-row">
+      <label for="k">k</label>
+      <input type="range" id="k" min="0.5" max="10" step="0.1" value="1">
+      <span id="kVal"></span>
+    </div>
+
+    <div class="slider-row">
+      <label for="b">b</label>
+      <input type="range" id="b" min="0" max="5" step="0.01" value="0">
+      <span id="bVal"></span>
+    </div>
+
+    <hr>
+
+    <div class="slider-row">
+      <label for="F">F</label>
+      <input type="range" id="F" min="0" max="5" step="0.01" value="0">
+      <span id="FVal"></span>
+    </div>
+
+    <div class="slider-row">
+      <label for="w">ω</label>
+      <input type="range" id="w" min="0" max="5" step="0.01" value="1">
+      <span id="wVal"></span>
+    </div>
+
+    <div class="slider-row">
+      <label for="omega0Slider">ω₀</label>
+      <input type="range" id="omega0Slider" min="0.5" max="5" step="0.01" value="1">
+      <span id="omega0Val"></span>
+    </div>
+
+    <div class="slider-row">
+      <label for="gammaSlider">γ</label>
+      <input type="range" id="gammaSlider" min="0" max="2" step="0.01" value="0">
+      <span id="gammaVal"></span>
+    </div>
+  </div>
+</div>
+
+<!-- Presets at the bottom -->
+<div id="presets">
+
+  <div class="preset-row">
+    <span class="preset-label">Damping:</span>
+    <button id="dampNone" class="preset-btn">No damping</button>
+    <button id="dampUnder" class="preset-btn">Underdamped</button>
+    <button id="dampCrit" class="preset-btn">Critical</button>
+    <button id="dampOver" class="preset-btn">Overdamped</button>
+    <button id="dampCustom" class="preset-btn">Custom damping</button>
+  </div>
+
+  <div class="preset-row">
+    <span class="preset-label">Driving:</span>
+    <button id="driveNone" class="preset-btn">No driving</button>
+    <button id="driveOff" class="preset-btn">Off-resonance</button>
+    <button id="driveRes" class="preset-btn">Resonance</button>
+    <button id="driveCustom" class="preset-btn">Custom driving</button>
+  </div>
+
+  <!-- Reset on its own line -->
+  <div class="preset-row">
+    <button id="resetBtn" class="preset-btn reset-btn">Reset</button>
+  </div>
+
+</div>
+
+<script src="oscillator.js"></script>
+</body>
+</html>
+

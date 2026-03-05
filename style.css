@@ -89,3 +89,26 @@ hr{
   border-color: #1f5fbf;
 }
 
+.plot-title{
+  font-weight: 600;
+  margin-bottom: 3px;
+}
+
+.panel{
+  width: 420px;
+  height: 250px;
+  display: grid;
+  grid-template-rows: 18px 1fr; /* title + canvas */
+  gap: 2px;
+}
+
+.panel canvas{
+  width: 420px;
+  height: 230px; /* 250 - (18 + 2) */
+}
+
+.plot-title{
+  font-weight: 600;
+  line-height: 18px;
+  margin-left: 2px;
+}

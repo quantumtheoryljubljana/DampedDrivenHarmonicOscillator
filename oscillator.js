@@ -348,17 +348,14 @@ function drawSimulation(){
   const px = tr.xPix(x);
   const py = tr.yPix(Vx);
 
-  const boxW = 26;
-  const boxH = 18;
-  const yOffset = 16;
+  const r = 10;      // circle radius
+  const yOffset = 0;
 
+  // circle (nice, no arrow)
   simCtx.fillStyle = "#000";
-  simCtx.fillRect(px - boxW/2, py - yOffset - boxH/2, boxW, boxH);
-
   simCtx.beginPath();
-  simCtx.moveTo(px, py);
-  simCtx.lineTo(px, py - yOffset);
-  simCtx.stroke();
+  simCtx.arc(px, py - yOffset, r, 0, 2*Math.PI);
+  simCtx.fill();
 }
 
 // --- (1,2) x(t) ---

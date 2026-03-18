@@ -485,7 +485,7 @@ function drawResAndPhase(){
     phasePlotCtx, phasePlotCanvas.width, phasePlotCanvas.height,
     0, wMax,
     yMin, yMax,
-    "ω / rad/s", "φ",
+    "ω / rad/s", "𝛿",
     5, 4,
     phaseTicks
   );
